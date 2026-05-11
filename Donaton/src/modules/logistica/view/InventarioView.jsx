@@ -1,4 +1,3 @@
-// InventarioView.jsx
 import { useInventarioViewModel } from '../viewmodel/InventarioViewModel'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import { Package, Warehouse, RefreshCw } from 'lucide-react'
@@ -9,7 +8,6 @@ const InventarioView = () => {
 
   if (loading) return <LoadingSpinner />
 
-  // Ordenar según el orden de TIPOS_RECURSO
   const inventarioOrdenado = [...inventario].sort((a, b) => {
     const indexA = TIPOS_RECURSO.findIndex(t => t.id === a.tipoRecursoId)
     const indexB = TIPOS_RECURSO.findIndex(t => t.id === b.tipoRecursoId)
@@ -22,7 +20,6 @@ const InventarioView = () => {
       <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.06)]" />
 
       <div className="max-w-4xl mx-auto relative">
-        {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-10">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest mb-2 text-[var(--color-primary)]">Logística</p>
@@ -33,8 +30,6 @@ const InventarioView = () => {
             <Warehouse size={24} />
           </div>
         </div>
-
-        {/* Error */}
         {error && (
           <div className="rounded-2xl px-4 py-3 text-sm font-medium mb-6 bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
             {error}

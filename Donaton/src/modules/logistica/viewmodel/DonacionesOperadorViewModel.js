@@ -1,4 +1,3 @@
-// DonacionesOperadorViewModel.js
 import { useState, useEffect } from 'react'
 import { fetchDonacionesPorCentro, actualizarEstadoDonacion, entradaInventario } from '../service/LogisticaService'
 import { useAuth } from '../../../context/AuthContext'

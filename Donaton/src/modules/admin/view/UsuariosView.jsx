@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { useUsuariosViewModel } from '../viewmodel/UsuariosViewModel'
-import LoadingSpinner from '../../../components/LoadingSpinner'
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { useUsuariosViewModel } from "../viewmodel/UsuariosViewModel";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 import {
   Users,
@@ -15,14 +15,14 @@ import {
   MapPin,
   ChevronDown,
   Check,
-} from 'lucide-react'
+} from "lucide-react";
 
 const ROL_ICONS = {
   1: Heart,
   2: Building2,
   3: Warehouse,
   4: Shield,
-}
+};
 
 const CustomSelect = ({
   label,
@@ -33,59 +33,57 @@ const CustomSelect = ({
   renderOption,
   renderSelected,
 }) => {
-  const [open, setOpen] = useState(false)
-  const [dropdownStyle, setDropdownStyle] = useState({})
+  const [open, setOpen] = useState(false);
+  const [dropdownStyle, setDropdownStyle] = useState({});
 
-  const ref = useRef(null)
-  const buttonRef = useRef(null)
-  const dropdownRef = useRef(null)
+  const ref = useRef(null);
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const updatePosition = () => {
-    if (!buttonRef.current) return
+    if (!buttonRef.current) return;
 
-    const rect = buttonRef.current.getBoundingClientRect()
+    const rect = buttonRef.current.getBoundingClientRect();
 
     setDropdownStyle({
-      position: 'fixed',
+      position: "fixed",
       top: rect.bottom + 8,
       left: rect.left,
       width: rect.width,
       zIndex: 999999,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      const clickedButton =
-        ref.current && ref.current.contains(e.target)
+      const clickedButton = ref.current && ref.current.contains(e.target);
 
       const clickedDropdown =
-        dropdownRef.current &&
-        dropdownRef.current.contains(e.target)
+        dropdownRef.current && dropdownRef.current.contains(e.target);
 
       if (!clickedButton && !clickedDropdown) {
-        setOpen(false)
+        setOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('click', handleClickOutside)
-    window.addEventListener('resize', updatePosition)
-    window.addEventListener('scroll', updatePosition, true)
+    document.addEventListener("click", handleClickOutside);
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside)
-      window.removeEventListener('resize', updatePosition)
-      window.removeEventListener('scroll', updatePosition, true)
-    }
-  }, [])
+      document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, []);
 
   const handleToggle = () => {
     if (!open) {
-      updatePosition()
+      updatePosition();
     }
 
-    setOpen(prev => !prev)
-  }
+    setOpen((prev) => !prev);
+  };
 
   const handleSelect = (option) => {
     onChange({
@@ -93,14 +91,12 @@ const CustomSelect = ({
         name,
         value: String(option.id),
       },
-    })
+    });
 
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
-  const selected = options.find(
-    o => String(o.id) === String(value)
-  )
+  const selected = options.find((o) => String(o.id) === String(value));
 
   return (
     <div className="relative w-full" ref={ref}>
@@ -130,9 +126,7 @@ const CustomSelect = ({
         "
       >
         <span className="flex-1 text-left truncate">
-          {selected
-            ? renderSelected(selected)
-            : 'Seleccionar'}
+          {selected ? renderSelected(selected) : "Seleccionar"}
         </span>
 
         <ChevronDown
@@ -140,7 +134,7 @@ const CustomSelect = ({
           className={`
             text-[var(--color-neutral)]
             transition-transform duration-200
-            ${open ? 'rotate-180' : ''}
+            ${open ? "rotate-180" : ""}
           `}
         />
       </button>
@@ -167,8 +161,7 @@ const CustomSelect = ({
               </div>
             ) : (
               options.map((o) => {
-                const isSelected =
-                  String(o.id) === String(value)
+                const isSelected = String(o.id) === String(value);
 
                 return (
                   <button
@@ -183,14 +176,12 @@ const CustomSelect = ({
                       transition-all
                       ${
                         isSelected
-                          ? 'bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]'
-                          : 'text-[var(--color-dark)] hover:bg-gray-50'
+                          ? "bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]"
+                          : "text-[var(--color-dark)] hover:bg-gray-50"
                       }
                     `}
                   >
-                    <span className="flex-1 text-left">
-                      {renderOption(o)}
-                    </span>
+                    <span className="flex-1 text-left">{renderOption(o)}</span>
 
                     {isSelected && (
                       <Check
@@ -199,15 +190,15 @@ const CustomSelect = ({
                       />
                     )}
                   </button>
-                )
+                );
               })
             )}
           </div>,
-          document.body
+          document.body,
         )}
     </div>
-  )
-}
+  );
+};
 
 const UsuariosView = () => {
   const {
@@ -231,32 +222,30 @@ const UsuariosView = () => {
 
     getRolNombre,
     getRolColor,
-  } = useUsuariosViewModel()
+  } = useUsuariosViewModel();
 
-  const [confirmDelete, setConfirmDelete] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  if (loadingData) return <LoadingSpinner />
+  if (loadingData) return <LoadingSpinner />;
 
   const ROLES = [
-    { id: '1', nombre: 'Donante' },
-    { id: '2', nombre: 'Municipalidad' },
-    { id: '3', nombre: 'Operador' },
-    { id: '4', nombre: 'Admin' },
-  ]
+    { id: "1", nombre: "Donante" },
+    { id: "2", nombre: "Municipalidad" },
+    { id: "3", nombre: "Operador" },
+    { id: "4", nombre: "Admin" },
+  ];
 
   const FILTROS = [
-    { id: 'todos', nombre: 'Todos' },
-    { id: '1', nombre: 'Donantes' },
-    { id: '2', nombre: 'Municipalidades' },
-    { id: '3', nombre: 'Operadores' },
-    { id: '4', nombre: 'Admins' },
-  ]
+    { id: "todos", nombre: "Todos" },
+    { id: "1", nombre: "Donantes" },
+    { id: "2", nombre: "Municipalidades" },
+    { id: "3", nombre: "Operadores" },
+    { id: "4", nombre: "Admins" },
+  ];
 
   return (
     <div className="min-h-screen px-4 py-12 bg-[linear-gradient(to_bottom_right,rgba(232,25,44,0.04),#FFFFFF)]">
       <div className="max-w-5xl mx-auto flex flex-col gap-8">
-
-        {/* HEADER */}
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest mb-2 text-[var(--color-primary)]">
@@ -277,9 +266,7 @@ const UsuariosView = () => {
           </div>
         </div>
 
-        {/* FORM */}
         <div className="rounded-[2rem] p-8 bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-[10px]">
-
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
               <UserPlus size={22} />
@@ -297,9 +284,7 @@ const UsuariosView = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
               <div>
                 <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">
                   Nombre completo
@@ -358,7 +343,7 @@ const UsuariosView = () => {
                 renderOption={(o) => o.nombre}
               />
 
-              {form.rolId === '2' && (
+              {form.rolId === "2" && (
                 <>
                   <CustomSelect
                     label="Región"
@@ -382,7 +367,7 @@ const UsuariosView = () => {
                 </>
               )}
 
-              {form.rolId === '3' && (
+              {form.rolId === "3" && (
                 <>
                   <CustomSelect
                     label="Región"
@@ -425,14 +410,12 @@ const UsuariosView = () => {
               disabled={loading}
               className="w-full h-14 rounded-2xl text-white font-bold text-sm bg-[var(--color-primary)]"
             >
-              {loading ? 'Creando...' : 'Crear usuario'}
+              {loading ? "Creando..." : "Crear usuario"}
             </button>
           </form>
         </div>
 
-        {/* LISTA */}
         <div>
-
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-black text-[var(--color-dark)]">
               Usuarios registrados
@@ -452,9 +435,7 @@ const UsuariosView = () => {
 
           {usuarios.length === 0 ? (
             <div className="rounded-[2rem] p-12 text-center bg-white border">
-              <h3 className="text-xl font-black mb-2">
-                Sin usuarios
-              </h3>
+              <h3 className="text-xl font-black mb-2">Sin usuarios</h3>
 
               <p className="text-sm text-gray-500">
                 No hay usuarios en este filtro.
@@ -462,10 +443,8 @@ const UsuariosView = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-
               {usuarios.map((u) => {
-                const RolIconUser =
-                  ROL_ICONS[u.rol?.id] || Heart
+                const RolIconUser = ROL_ICONS[u.rol?.id] || Heart;
 
                 return (
                   <div
@@ -473,7 +452,6 @@ const UsuariosView = () => {
                     className="rounded-[1.75rem] p-5 bg-white border border-[rgba(124,132,131,0.12)] shadow-sm"
                   >
                     <div className="flex justify-between items-center">
-
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
                           <RolIconUser size={22} />
@@ -505,7 +483,6 @@ const UsuariosView = () => {
                       </div>
 
                       <div className="flex items-center gap-3">
-
                         <span
                           className={`
                             text-xs font-bold px-3 py-1.5 rounded-xl border
@@ -519,8 +496,8 @@ const UsuariosView = () => {
                           <div className="flex gap-2">
                             <button
                               onClick={() => {
-                                handleEliminar(u.id)
-                                setConfirmDelete(null)
+                                handleEliminar(u.id);
+                                setConfirmDelete(null);
                               }}
                               className="h-9 px-3 rounded-xl text-xs font-bold bg-red-500 text-white"
                             >
@@ -545,14 +522,14 @@ const UsuariosView = () => {
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UsuariosView
+export default UsuariosView;

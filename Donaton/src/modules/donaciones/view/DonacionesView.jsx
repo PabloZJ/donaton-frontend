@@ -1,4 +1,3 @@
-// DonacionesView.jsx
 import { Link } from 'react-router-dom'
 import { useDonacionesViewModel } from '../viewmodel/DonacionesViewModel'
 import LoadingSpinner from '../../../components/LoadingSpinner'
@@ -43,14 +42,12 @@ const DonacionesView = () => {
           </Link>
         </div>
 
-        {/* Error */}
         {error && (
           <div className="rounded-2xl px-4 py-3 text-sm font-medium mb-6 bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
             {error}
           </div>
         )}
 
-        {/* Empty state */}
         {donaciones.length === 0 ? (
           <div className="rounded-[2rem] p-12 text-center bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
             <div className="w-20 h-20 mx-auto mb-5 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)]">
@@ -80,7 +77,6 @@ const DonacionesView = () => {
                   className="rounded-[1.5rem] p-5 transition-all hover:shadow-md bg-[rgba(255,255,255,0.85)] border border-[rgba(124,132,131,0.12)] shadow-[0_4px_16px_rgba(0,0,0,0.05)]"
                 >
                   <div className="flex justify-between items-start gap-4">
-                    {/* Info */}
                     <div className="flex gap-4 items-start">
                       <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
                         <RecursoIcon size={20} />
@@ -107,8 +103,6 @@ const DonacionesView = () => {
                         )}
                       </div>
                     </div>
-
-                    {/* Badge estado */}
                     <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex-shrink-0 flex items-center gap-1 ${estado.bg} ${estado.color}`}>
                       <EstadoIcon size={12} />
                       {estado.label}

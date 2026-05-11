@@ -1,11 +1,10 @@
-// AsignacionesView.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useAsignacionesViewModel } from '../viewmodel/AsignacionesViewModel'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import {
   Warehouse, Package, ArrowRightLeft, ClipboardList,
   ChevronDown, Check, AlertTriangle, Calendar, Inbox,
-  TrendingDown, Hash, CheckCircle2, MapPin
+  TrendingDown, CheckCircle2, MapPin
 } from 'lucide-react'
 import { TIPOS_RECURSO } from '../../../utils/recursos'
 
@@ -65,6 +64,7 @@ const AsignacionesView = () => {
           </div>
         </div>
 
+        {/* Sin centro */}
         {!centroAcopioId && (
           <div className="rounded-[2rem] p-12 text-center bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
             <div className="w-20 h-20 mx-auto mb-5 rounded-2xl flex items-center justify-center bg-[rgba(124,132,131,0.08)]">
@@ -75,6 +75,7 @@ const AsignacionesView = () => {
           </div>
         )}
 
+        {/* Con centro */}
         {centroAcopioId && (
           <>
             {/* Formulario */}
@@ -90,7 +91,7 @@ const AsignacionesView = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Paso 1 */}
+                {/* Paso 1: Recurso */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[var(--color-primary)] text-white text-xs font-bold">1</span>
@@ -98,7 +99,7 @@ const AsignacionesView = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {/* Tipo */}
+                    {/* Dropdown tipo */}
                     <div className="relative" ref={tipoRef}>
                       <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Tipo de recurso</label>
                       <button
@@ -148,7 +149,7 @@ const AsignacionesView = () => {
                   </div>
                 </div>
 
-                {/* Paso 2 */}
+                {/* Paso 2: Necesidad */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[var(--color-primary)] text-white text-xs font-bold">2</span>
@@ -168,9 +169,11 @@ const AsignacionesView = () => {
                         onClick={() => setNecesidadOpen(!necesidadOpen)}
                         className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] outline-none pl-4 pr-4 text-sm font-medium bg-white transition-all flex items-center gap-3 text-[var(--color-dark)]"
                       >
-                        <Hash size={20} className="text-[var(--color-accent)]" />
+                        <MapPin size={20} className="text-[var(--color-accent)]" />
                         <span className="flex-1 text-left truncate">
-                          {necesidadSeleccionada ? `#${necesidadSeleccionada.id} — ${necesidadSeleccionada.comuna?.nombre || 'Sin comuna'} — ${necesidadSeleccionada.cantidad - (necesidadSeleccionada.cantidadCubierta || 0)} pendiente` : 'Seleccionar necesidad'}
+                          {necesidadSeleccionada
+                            ? `${necesidadSeleccionada.nombreComuna || 'Sin comuna'} — ${necesidadSeleccionada.cantidad} ${TIPOS_RECURSO.find(t => t.id === necesidadSeleccionada.tipoRecursoId)?.unidad || 'unidades'}`
+                            : 'Seleccionar necesidad'}
                         </span>
                         <ChevronDown size={18} className={`text-[var(--color-neutral)] transition-transform ${necesidadOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -179,47 +182,28 @@ const AsignacionesView = () => {
                         <div className="absolute z-50 w-full mt-2 rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)]">
                           {necesidadesFiltradas.map((n) => {
                             const isSelected = parseInt(form.necesidadId) === n.id
-                            const pendiente = n.cantidad - (n.cantidadCubierta || 0)
-                            const porcentaje = Math.min(((n.cantidadCubierta || 0) / n.cantidad) * 100, 100)
                             const tipoNecesidad = TIPOS_RECURSO.find(t => t.id === n.tipoRecursoId)
+                            const asignado = n.cantidadCubierta || 0
 
                             return (
                               <button
                                 key={n.id}
                                 type="button"
                                 onClick={() => handleSelectNecesidad(n.id)}
-                                className={`w-full px-4 py-4 flex items-start gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)]' : 'hover:bg-gray-50'}`}
+                                className={`w-full px-4 py-3 flex items-center gap-3 text-sm transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)]' : 'hover:bg-gray-50'}`}
                               >
-                                <Hash size={16} className={isSelected ? 'text-[var(--color-primary)] mt-1' : 'text-[var(--color-neutral)] mt-1'} />
-                                
+                                <MapPin size={16} className={isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'} />
+
                                 <div className="flex-1 text-left min-w-0">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className={`font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-dark)]'}`}>
-                                      Necesidad #{n.id}
-                                    </span>
-                                    <span className="text-xs px-2 py-0.5 rounded-lg bg-[rgba(244,172,69,0.12)] text-[#B87A00] flex items-center gap-1">
-                                      <MapPin size={10} />
-                                      {n.comuna?.nombre || 'Sin comuna'}
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center gap-3 text-xs text-[var(--color-neutral)] mb-2">
-                                    <span>Requiere: <span className="font-semibold text-[var(--color-dark)]">{n.cantidad} {tipoNecesidad?.unidad}</span></span>
-                                    <span>·</span>
-                                    <span>Cubierto: <span className="font-semibold text-[var(--color-accent)]">{n.cantidadCubierta || 0}</span></span>
-                                    <span>·</span>
-                                    <span>Pendiente: <span className="font-semibold text-[var(--color-primary)]">{pendiente}</span></span>
-                                  </div>
-
-                                  <div className="w-full h-1.5 rounded-full bg-[rgba(124,132,131,0.12)] overflow-hidden">
-                                    <div
-                                      className="h-full rounded-full transition-all bg-[var(--color-primary)]"
-                                      style={{ width: `${porcentaje}%` }}
-                                    />
-                                  </div>
+                                  <p className={`font-semibold truncate ${isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-dark)]'}`}>
+                                    {n.nombreComuna || 'Sin comuna'}
+                                  </p>
+                                  <p className="text-xs text-[var(--color-neutral)]">
+                                    Necesita {n.cantidad} {tipoNecesidad?.unidad || 'unidades'} · Asignado: {asignado}
+                                  </p>
                                 </div>
 
-                                {isSelected && <Check size={16} className="text-[var(--color-primary)] mt-1" />}
+                                {isSelected && <Check size={16} className="text-[var(--color-primary)] flex-shrink-0" />}
                               </button>
                             )
                           })}
@@ -229,7 +213,7 @@ const AsignacionesView = () => {
                   )}
                 </div>
 
-                {/* Paso 3 */}
+                {/* Paso 3: Cantidad */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[var(--color-primary)] text-white text-xs font-bold">3</span>
@@ -246,7 +230,7 @@ const AsignacionesView = () => {
                   </div>
                 </div>
 
-                {/* Messages */}
+                {/* Error / Success */}
                 {error && (
                   <div className="rounded-2xl px-4 py-3 text-sm font-medium bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
                     {error}

@@ -1,4 +1,3 @@
-// ViewModel
 import { useState, useEffect } from 'react'
 import { fetchComunaPorId, fetchCentrosPorRegion, crearNecesidad } from '../service/NecesidadesService'
 import { useAuth } from '../../../context/AuthContext'

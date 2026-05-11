@@ -1,4 +1,3 @@
-// useInventarioViewModel.js
 import { useState, useEffect } from 'react'
 import { fetchInventarioPorCentro } from '../service/LogisticaService'
 import { useAuth } from '../../../context/AuthContext'

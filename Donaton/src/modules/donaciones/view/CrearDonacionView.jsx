@@ -1,4 +1,3 @@
-// CrearDonacionView.jsx
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
 import {
@@ -24,7 +23,6 @@ const CrearDonacionView = () => {
 
   const { form, handleChange, handleSubmit, centros, loading, loadingData, error, success } = useCrearDonacionViewModel()
 
-  // Calcular regiones DESPUÉS de tener centros
   const regiones = centros.length > 0 
     ? [...new Map(centros.map(c => [c.region.id, c.region])).values()]
     : []
@@ -87,7 +85,6 @@ const CrearDonacionView = () => {
       <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.06)]" />
 
       <div className="max-w-3xl mx-auto relative">
-        {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-10">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest mb-2 text-[var(--color-primary)]">Panel donante</p>
@@ -104,11 +101,9 @@ const CrearDonacionView = () => {
           </button>
         </div>
 
-        {/* Card */}
         <div className="rounded-[2rem] p-8 bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-[12px]">
           <form onSubmit={handleSubmit} className="space-y-10">
 
-            {/* PASO 1 */}
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
@@ -121,7 +116,6 @@ const CrearDonacionView = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Tipo */}
                 <div className="relative" ref={tipoRef}>
                   <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Tipo de recurso</label>
                   <button
@@ -156,7 +150,6 @@ const CrearDonacionView = () => {
                   )}
                 </div>
 
-                {/* Cantidad */}
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">
                     Cantidad
@@ -171,7 +164,6 @@ const CrearDonacionView = () => {
               </div>
             </div>
 
-            {/* PASO 2 */}
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(244,172,69,0.10)] text-[var(--color-accent)]">
@@ -184,7 +176,6 @@ const CrearDonacionView = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Región */}
                 <div className="relative" ref={regionRef}>
                   <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Región</label>
                   <button
@@ -218,7 +209,6 @@ const CrearDonacionView = () => {
                   )}
                 </div>
 
-                {/* Centro */}
                 <div className="relative" ref={centroRef}>
                   <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Centro de acopio</label>
                   <button
@@ -258,7 +248,6 @@ const CrearDonacionView = () => {
               </div>
             </div>
 
-            {/* PASO 3 */}
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(124,132,131,0.08)] text-[var(--color-neutral)]">
@@ -271,7 +260,6 @@ const CrearDonacionView = () => {
               </div>
 
               <div className="flex flex-col gap-5">
-                {/* Fecha */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Fecha</label>
@@ -297,7 +285,6 @@ const CrearDonacionView = () => {
                   </div>
                 </div>
 
-                {/* Observación */}
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Observación</label>
                   <div className="relative">
@@ -312,14 +299,12 @@ const CrearDonacionView = () => {
               </div>
             </div>
 
-            {/* Error */}
             {error && (
               <div className="rounded-2xl px-4 py-3 text-sm font-medium bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
                 {error}
               </div>
             )}
 
-            {/* Actions */}
             <div className="flex gap-4 pt-2">
               <button
                 type="button" onClick={() => navigate('/donaciones')}

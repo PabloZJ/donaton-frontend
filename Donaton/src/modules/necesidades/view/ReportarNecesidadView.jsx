@@ -1,4 +1,3 @@
-// View
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -43,7 +42,6 @@ const ReportarNecesidadView = () => {
       <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.07)]" />
 
       <div className="max-w-3xl mx-auto relative">
-        {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-10">
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
@@ -67,10 +65,8 @@ const ReportarNecesidadView = () => {
           </button>
         </div>
 
-        {/* Card */}
         <div className="rounded-[2rem] p-8 bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-[10px]">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Paso 1 */}
             <div>
               <div className="flex items-center gap-2 mb-5">
                 <ClipboardList size={18} className="text-[var(--color-primary)]" />
@@ -78,7 +74,6 @@ const ReportarNecesidadView = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                   <label className="text-sm font-semibold block mb-2 text-[var(--color-dark)]">Tipo de recurso</label>
 
@@ -114,7 +109,6 @@ const ReportarNecesidadView = () => {
                   )}
                 </div>
 
-                {/* Cantidad */}
                 <div>
                   <label className="text-sm font-semibold block mb-2 text-[var(--color-dark)]">
                     Cantidad requerida
@@ -129,7 +123,6 @@ const ReportarNecesidadView = () => {
               </div>
             </div>
 
-            {/* Paso 2 */}
             <div>
               <div className="flex items-center gap-2 mb-5">
                 <Building2 size={18} className="text-[var(--color-primary)]" />
@@ -169,7 +162,6 @@ const ReportarNecesidadView = () => {
               </div>
             </div>
 
-            {/* Paso 3 */}
             <div>
               <div className="flex items-center gap-2 mb-5">
                 <FileText size={18} className="text-[var(--color-primary)]" />
@@ -185,14 +177,12 @@ const ReportarNecesidadView = () => {
               </div>
             </div>
 
-            {/* Error */}
             {error && (
               <div className="rounded-2xl px-4 py-3 text-sm font-medium bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
                 {error}
               </div>
             )}
 
-            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button
                 type="button" onClick={() => navigate('/necesidades')}

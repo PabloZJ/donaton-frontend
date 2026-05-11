@@ -63,7 +63,6 @@ const HomeView = () => {
   return (
     <div className="bg-white overflow-hidden">
 
-      {/* HERO */}
       <section
         className="relative"
         style={{
@@ -72,7 +71,6 @@ const HomeView = () => {
         }}
       >
 
-        {/* Blurs */}
         <div
           className="absolute top-[-120px] left-[-80px] w-80 h-80 rounded-full blur-3xl"
           style={{ backgroundColor: 'rgba(232,25,44,0.10)' }}
@@ -85,10 +83,8 @@ const HomeView = () => {
 
         <div className="relative max-w-7xl mx-auto px-4 py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-          {/* LEFT */}
           <div>
 
-            {/* Badge */}
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
               style={{
@@ -100,7 +96,6 @@ const HomeView = () => {
               Tu ayuda puede salvar vidas
             </div>
 
-            {/* Title */}
             <h1
               className="text-5xl lg:text-7xl font-black leading-[1.05] mb-6"
               style={{ color: COLORS.dark }}
@@ -111,7 +106,6 @@ const HomeView = () => {
               </span>
             </h1>
 
-            {/* Description */}
             <p
               className="text-lg leading-relaxed max-w-xl mb-10"
               style={{ color: COLORS.neutral }}
@@ -121,7 +115,6 @@ const HomeView = () => {
               frente a desastres y emergencias en todo Chile.
             </p>
 
-            {/* Buttons */}
             {isAuthenticated ? (
               <Link
                 to={getRolPath(rol)}
@@ -184,7 +177,6 @@ const HomeView = () => {
               </div>
             )}
 
-            {/* Stats */}
             <div className="flex flex-wrap gap-8 mt-14">
 
               {stats.map((item, i) => (
@@ -226,10 +218,8 @@ const HomeView = () => {
 
           </div>
 
-          {/* RIGHT */}
           <div className="relative hidden lg:block">
 
-            {/* Image */}
             <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl">
 
               <img
@@ -242,7 +232,6 @@ const HomeView = () => {
 
             </div>
 
-            {/* Floating Card */}
             <div
               className="
                 absolute bottom-8 -left-10
@@ -293,7 +282,6 @@ const HomeView = () => {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section
         className="py-24 px-4"
         style={{
@@ -303,7 +291,6 @@ const HomeView = () => {
 
         <div className="max-w-6xl mx-auto">
 
-          {/* Header */}
           <div className="text-center mb-16">
 
             <span
@@ -330,7 +317,6 @@ const HomeView = () => {
 
           </div>
 
-          {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             {steps.map((item, i) => (
@@ -386,7 +372,6 @@ const HomeView = () => {
         </div>
       </section>
 
-      {/* CTA */}
       <section
         className="relative overflow-hidden py-24 px-4"
         style={{
@@ -395,7 +380,6 @@ const HomeView = () => {
         }}
       >
 
-        {/* Blur */}
         <div
           className="absolute top-0 left-0 w-80 h-80 rounded-full blur-3xl"
           style={{ backgroundColor: 'rgba(232,25,44,0.08)' }}

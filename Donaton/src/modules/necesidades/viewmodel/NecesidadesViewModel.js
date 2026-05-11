@@ -36,6 +36,6 @@ export const useNecesidadesViewModel = () => {
   }, [])
 
   const getTipoNombre = (id) => TIPOS_RECURSO.find(t => t.id === id)?.nombre || 'Desconocido'
-
+  
   return { necesidades, loading, error, getTipoNombre }
 }

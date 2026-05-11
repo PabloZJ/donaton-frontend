@@ -1,2 +1,20 @@
 @import "tailwindcss";
-@plugin "daisyui";
+
+@plugin "daisyui" {
+    themes: false;
+}
+
+:root {
+    --color-primary: #E8192C;
+    --color-primary-dark: #c1121f;
+    --color-background: #FFFFFF;
+    --color-dark: #22181C;
+    --color-accent: #F4AC45;
+    --color-neutral: #7C8483;
+    --color-primary-content: #ffffff;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-dark);
+}

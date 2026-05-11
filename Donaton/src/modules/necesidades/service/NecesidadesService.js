@@ -54,3 +54,31 @@ export const crearNecesidad = async (body) => {
   if (!res.ok) throw new Error('Error al crear necesidad')
   return res.json()
 }
+export const fetchComunaPorId = async (comunaId) => {
+  const token = await getToken()
+  const res = await fetch(`${API_URL}/api/logistica/comunas/${comunaId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  if (!res.ok) throw new Error('Error al obtener comuna')
+  return res.json()
+}
+
+export const fetchCentrosPorRegion = async (regionId) => {
+  const token = await getToken()
+  const res = await fetch(`${API_URL}/api/logistica/centros-acopio/region/${regionId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  if (res.status === 204) return []
+  if (!res.ok) throw new Error('Error al obtener centros')
+  return res.json()
+}
+
+export const fetchNecesidadesPorCentro = async (centroId) => {
+  const token = await getToken()
+  const res = await fetch(`${API_URL}/api/necesidades/necesidades/centro/${centroId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  if (res.status === 204) return []
+  if (!res.ok) throw new Error('Error al obtener necesidades')
+  return res.json()
+}

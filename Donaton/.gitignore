@@ -8,7 +8,7 @@ lerna-debug.log*
 
 # Dependencies
 node_modules/
-
+node_modules
 # Build
 dist
 dist-ssr
@@ -20,7 +20,6 @@ dist-ssr
 
 # Local files
 *.local
-
 # Editor
 .vscode/
 !.vscode/extensions.json

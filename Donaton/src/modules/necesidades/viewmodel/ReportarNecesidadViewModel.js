@@ -1,24 +1,11 @@
+// ViewModel
 import { useState, useEffect } from 'react'
-import { fetchEstadosNecesidad, fetchComunas, crearNecesidad } from '../service/NecesidadesService'
+import { fetchComunaPorId, fetchCentrosPorRegion, crearNecesidad } from '../service/NecesidadesService'
 import { useAuth } from '../../../context/AuthContext'
 
-const TIPOS_RECURSO = [
-  { id: 1, nombre: 'Agua' },
-  { id: 2, nombre: 'Comida no perecible' },
-  { id: 3, nombre: 'Ropa' },
-  { id: 4, nombre: 'Medicamentos' },
-  { id: 5, nombre: 'Colchones' },
-  { id: 6, nombre: 'Artículos de aseo' },
-  { id: 7, nombre: 'Mantas' },
-  { id: 8, nombre: 'Pañales' },
-  { id: 9, nombre: 'Leche en polvo' },
-  { id: 10, nombre: 'Alimentos para mascotas' },
-]
-
 export const useReportarNecesidadViewModel = () => {
-  const { user } = useAuth()
-  const [estados, setEstados] = useState([])
-  const [comunas, setComunas] = useState([])
+  const { user, perfil } = useAuth()
+  const [centros, setCentros] = useState([])
   const [loadingData, setLoadingData] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -27,39 +14,28 @@ export const useReportarNecesidadViewModel = () => {
   const [form, setForm] = useState({
     tipoRecursoId: '1',
     cantidad: '',
-    cantidadCubierta: '0',
     descripcion: '',
     direccion: '',
-    comunaId: '',
-    estadoId: '',
+    centroAcopioId: '',
   })
 
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const [estadosData, comunasData] = await Promise.all([
-          fetchEstadosNecesidad(),
-          fetchComunas(),
-        ])
-        setEstados(estadosData)
-        setComunas(comunasData)
-        setForm(prev => ({
-          ...prev,
-          estadoId: String(estadosData[0]?.id || ''),
-          comunaId: String(comunasData[0]?.id || ''),
-        }))
+        const comuna = await fetchComunaPorId(perfil.comunaId)
+        const centrosData = await fetchCentrosPorRegion(comuna.region.id)
+        setCentros(centrosData)
+        setForm(prev => ({ ...prev, centroAcopioId: String(centrosData[0]?.id || '') }))
       } catch (err) {
         setError(err.message)
       } finally {
         setLoadingData(false)
       }
     }
-    cargarDatos()
-  }, [])
+    if (perfil?.comunaId) cargarDatos()
+  }, [perfil])
 
-  const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -72,8 +48,9 @@ export const useReportarNecesidadViewModel = () => {
         cantidadCubierta: 0,
         descripcion: form.descripcion || null,
         direccion: form.direccion,
-        comunaId: parseInt(form.comunaId),
-        estado: { id: parseInt(form.estadoId) },
+        comunaId: perfil.comunaId,
+        centroAcopioId: parseInt(form.centroAcopioId),
+        estado: { id: 1 },
         reportadoPorUid: user.uid,
         fechaReporte: new Date().toISOString().slice(0, 19),
       })
@@ -85,9 +62,5 @@ export const useReportarNecesidadViewModel = () => {
     }
   }
 
-  return {
-    form, handleChange, handleSubmit,
-    estados, comunas, TIPOS_RECURSO,
-    loading, loadingData, error, success,
-  }
+  return { form, handleChange, handleSubmit, centros, loading, loadingData, error, success }
 }

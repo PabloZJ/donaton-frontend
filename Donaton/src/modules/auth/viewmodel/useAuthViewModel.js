@@ -9,6 +9,44 @@ import { useAuth } from '../../../context/AuthContext'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
+const getFriendlyError = (firebaseError) => {
+  const code = firebaseError.code || ''
+  
+  const credentialErrors = [
+    'auth/invalid-credential',
+    'auth/user-not-found',
+    'auth/wrong-password',
+    'auth/invalid-email',
+    'auth/invalid-login-credentials',
+  ]
+  
+  if (credentialErrors.includes(code)) {
+    return 'Email o contraseña inválidos'
+  }
+  
+  if (code === 'auth/user-disabled') {
+    return 'Esta cuenta ha sido deshabilitada'
+  }
+  
+  if (code === 'auth/too-many-requests') {
+    return 'Demasiados intentos fallidos. Intenta más tarde'
+  }
+  
+  if (code === 'auth/network-request-failed') {
+    return 'Error de conexión. Verifica tu internet'
+  }
+  
+  if (code === 'auth/email-already-in-use') {
+    return 'Este correo ya está registrado'
+  }
+  
+  if (code === 'auth/weak-password') {
+    return 'La contraseña debe tener al menos 6 caracteres'
+  }
+  
+  return 'Ocurrió un error. Intenta de nuevo'
+}
+
 export const useAuthViewModel = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -39,8 +77,9 @@ export const useAuthViewModel = () => {
       await refreshPerfil()
       return { success: true }
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      const friendlyMsg = getFriendlyError(err)
+      setError(friendlyMsg)
+      return { success: false, error: friendlyMsg }
     } finally {
       setLoading(false)
     }
@@ -53,8 +92,9 @@ export const useAuthViewModel = () => {
       await signInWithEmailAndPassword(auth, email, password)
       return { success: true }
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      const friendlyMsg = getFriendlyError(err)
+      setError(friendlyMsg)
+      return { success: false, error: friendlyMsg }
     } finally {
       setLoading(false)
     }
@@ -66,8 +106,9 @@ export const useAuthViewModel = () => {
       await signOut(auth)
       return { success: true }
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      const friendlyMsg = getFriendlyError(err)
+      setError(friendlyMsg)
+      return { success: false, error: friendlyMsg }
     } finally {
       setLoading(false)
     }

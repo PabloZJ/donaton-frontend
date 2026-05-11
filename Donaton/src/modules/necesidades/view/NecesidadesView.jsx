@@ -1,54 +1,138 @@
 import { Link } from 'react-router-dom'
+import {
+  Plus, MapPin, Calendar, HeartHandshake,
+  CheckCircle2, Clock, Loader2
+} from 'lucide-react'
+
+import { TIPOS_RECURSO } from '../../../utils/recursos'
 import { useNecesidadesViewModel } from '../viewmodel/NecesidadesViewModel'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 
+const estadoConfig = (nombre) => {
+  const configs = {
+    'pendiente': { bg: 'bg-[rgba(244,172,69,0.12)]', color: 'text-[#B87A00]', icon: Clock, label: 'Pendiente' },
+    'en proceso': { bg: 'bg-[rgba(59,130,246,0.10)]', color: 'text-[#2563EB]', icon: Loader2, label: 'En proceso' },
+    'cubierta': { bg: 'bg-[rgba(34,197,94,0.10)]', color: 'text-[#16A34A]', icon: CheckCircle2, label: 'Cubierta' },
+  }
+  return configs[nombre] || { bg: 'bg-[rgba(124,132,131,0.10)]', color: 'text-[var(--color-neutral)]', icon: Clock, label: nombre }
+}
+
 const NecesidadesView = () => {
-  const { necesidades, loading, error, getTipoNombre } = useNecesidadesViewModel()
+  const { necesidades, loading, error } = useNecesidadesViewModel()
 
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="min-h-screen bg-base-200 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Mis Necesidades</h1>
-          <Link to="/necesidades/reportar" className="btn btn-primary">Reportar necesidad</Link>
+    <div className="min-h-screen px-4 py-12 bg-[linear-gradient(to_bottom_right,rgba(232,25,44,0.04),#FFFFFF)]">
+      <div className="fixed top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none bg-[rgba(232,25,44,0.06)]" />
+      <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.06)]" />
+
+      <div className="max-w-4xl mx-auto relative">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 mb-10">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-2 text-[var(--color-primary)]">Municipalidad</p>
+            <h1 className="text-4xl font-black text-[var(--color-dark)]">Necesidades Reportadas</h1>
+            <p className="mt-2 text-sm text-[var(--color-neutral)]">Gestiona las necesidades de ayuda humanitaria reportadas.</p>
+          </div>
+
+          <Link
+            to="/necesidades/reportar"
+            className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-white font-bold text-sm transition-all hover:scale-[1.02] bg-[var(--color-primary)] shadow-[0_8px_24px_rgba(232,25,44,0.25)]"
+          >
+            <Plus size={18} />
+            Reportar necesidad
+          </Link>
         </div>
 
-        {error && <div className="alert alert-error mb-4"><span>{error}</span></div>}
+        {error && (
+          <div className="rounded-2xl px-4 py-3 text-sm font-medium mb-6 bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
+            {error}
+          </div>
+        )}
 
         {necesidades.length === 0 ? (
-          <div className="card bg-base-100 shadow">
-            <div className="card-body items-center text-center py-12">
-              <p className="text-lg opacity-60">No has reportado necesidades aún</p>
-              <Link to="/necesidades/reportar" className="btn btn-primary mt-4">Reportar primera necesidad</Link>
+          <div className="rounded-[2rem] p-12 text-center bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+            <div className="w-20 h-20 mx-auto mb-5 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)]">
+              <HeartHandshake size={36} className="text-[var(--color-primary)]" />
             </div>
+            <h3 className="text-2xl font-black mb-2 text-[var(--color-dark)]">No hay necesidades reportadas</h3>
+            <p className="text-sm mb-6 text-[var(--color-neutral)]">Reporta recursos necesarios para coordinar ayuda rápidamente.</p>
+            <Link
+              to="/necesidades/reportar"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-white font-bold text-sm transition-all hover:scale-[1.02] bg-[var(--color-primary)] shadow-[0_8px_24px_rgba(232,25,44,0.25)]"
+            >
+              <Plus size={16} />
+              Reportar primera necesidad
+            </Link>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            {necesidades.map(n => (
-              <div key={n.id} className="card bg-base-100 shadow">
-                <div className="card-body">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-lg">{getTipoNombre(n.tipoRecursoId)}</h3>
-                      <p className="text-sm opacity-60">Cantidad: {n.cantidad} {n.cantidadCubierta > 0 && `(Cubierta: ${n.cantidadCubierta})`}</p>
-                      <p className="text-sm opacity-60">Dirección: {n.direccion}</p>
-                      <p className="text-sm opacity-60">Fecha: {new Date(n.fechaReporte).toLocaleDateString('es-CL')}</p>
-                      {n.descripcion && <p className="text-sm mt-1">{n.descripcion}</p>}
+          <div className="flex flex-col gap-5">
+            {necesidades.map(n => {
+              const estado = estadoConfig(n.estado?.nombre)
+              const EstadoIcon = estado.icon
+              const tipo = TIPOS_RECURSO.find(t => t.id === n.tipoRecursoId)
+              const RecursoIcon = tipo?.icono
+              const porcentaje = Math.min((n.cantidadCubierta / n.cantidad) * 100, 100)
+
+              return (
+                <div
+                  key={n.id}
+                  className="rounded-[1.75rem] p-6 transition-all hover:shadow-lg bg-[rgba(255,255,255,0.85)] border border-[rgba(124,132,131,0.12)] shadow-[0_4px_16px_rgba(0,0,0,0.05)] backdrop-blur-[10px]"
+                >
+                  <div className="flex justify-between items-start gap-5">
+                    <div className="flex gap-4 items-start flex-1">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
+                        {RecursoIcon && <RecursoIcon size={24} />}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-xl font-black text-[var(--color-dark)]">{tipo?.nombre || 'Recurso'}</h3>
+                          <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 ${estado.bg} ${estado.color}`}>
+                            <EstadoIcon size={14} />
+                            {estado.label}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm mb-3">
+                          <span className="font-semibold text-[var(--color-dark)]">
+                            {n.cantidad} <span className="font-normal text-[var(--color-neutral)]">{tipo?.unidad}</span>
+                          </span>
+
+                          {n.cantidadCubierta > 0 && (
+                            <span className="flex items-center gap-1.5 text-[var(--color-accent)]">
+                              <HeartHandshake size={14} />
+                              {n.cantidadCubierta} cubierta
+                            </span>
+                          )}
+
+                          <span className="flex items-center gap-1.5 text-[var(--color-neutral)]">
+                            <MapPin size={14} />
+                            {n.direccion}
+                          </span>
+
+                          <span className="flex items-center gap-1.5 text-[var(--color-neutral)]">
+                            <Calendar size={14} />
+                            {new Date(n.fechaReporte).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+
+                        <div className="w-full h-2 rounded-full bg-[rgba(124,132,131,0.12)] overflow-hidden mb-3">
+                          <div
+                            className="h-full rounded-full transition-all bg-[var(--color-primary)]"
+                            style={{ width: `${porcentaje}%` }}
+                          />
+                        </div>
+
+                        {n.descripcion && (
+                          <p className="text-sm leading-relaxed text-[var(--color-neutral)]">{n.descripcion}</p>
+                        )}
+                      </div>
                     </div>
-                    <span className={`badge badge-lg ${
-                      n.estado.nombre === 'pendiente' ? 'badge-warning' :
-                      n.estado.nombre === 'en proceso' ? 'badge-info' :
-                      n.estado.nombre === 'cubierta' ? 'badge-success' :
-                      'badge-ghost'
-                    }`}>
-                      {n.estado.nombre}
-                    </span>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>

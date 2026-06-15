@@ -9,11 +9,19 @@ import {
 import { TIPOS_RECURSO } from '../../../utils/recursos'
 import { validators, validateForm, withQuantity } from '../../../utils/validations'
 
-const ASIGNACION_SCHEMA = {
+// FIX 1: integer=false para aceptar decimales (coincide con step="0.1")
+// FIX 2: el segundo argumento del validator es `form`, lo usamos para validar contra stock
+const buildSchema = (stockDisponible) => ({
   tipoRecursoId: (v) => validators.select(v, 'un tipo de recurso'),
   necesidadId: (v) => validators.select(v, 'una necesidad'),
-  cantidadAsignada: withQuantity({ min: 0.1, label: 'La cantidad' }),
-}
+  cantidadAsignada: (v) => {
+    const baseError = withQuantity({ min: 0.1, label: 'La cantidad', integer: false })(v)
+    if (baseError) return baseError
+    if (stockDisponible !== null && Number(v) > stockDisponible)
+      return `La cantidad no puede superar el stock disponible (${stockDisponible})`
+    return null
+  },
+})
 
 const AsignacionesView = () => {
   const {
@@ -40,18 +48,24 @@ const AsignacionesView = () => {
 
   if (loadingData) return <LoadingSpinner />
 
-  const recursoSeleccionado = inventario.find(i => i.tipoRecursoId === parseInt(form.tipoRecursoId))
-  const tipoSeleccionado = TIPOS_RECURSO.find(t => t.id === parseInt(form.tipoRecursoId))
-  const necesidadSeleccionada = necesidadesFiltradas.find(n => n.id === parseInt(form.necesidadId))
+  // FIX 3: normalizar IDs a número desde el principio para evitar parseInt dispersos
+  const tipoRecursoId = form.tipoRecursoId !== '' ? Number(form.tipoRecursoId) : null
+  const necesidadId = form.necesidadId !== '' ? Number(form.necesidadId) : null
 
-  const handleSelectTipo = (tipoId) => {
-    handleChange({ target: { name: 'tipoRecursoId', value: String(tipoId) } })
+  const recursoSeleccionado = inventario.find(i => i.tipoRecursoId === tipoRecursoId)
+  const tipoSeleccionado = TIPOS_RECURSO.find(t => t.id === tipoRecursoId)
+  const necesidadSeleccionada = necesidadesFiltradas.find(n => n.id === necesidadId)
+
+  const stockDisponible = recursoSeleccionado?.cantidadDisponible ?? null
+
+  const handleSelectTipo = (id) => {
+    handleChange({ target: { name: 'tipoRecursoId', value: String(id) } })
     if (formErrors.tipoRecursoId) setFormErrors(prev => ({ ...prev, tipoRecursoId: '' }))
     setTipoOpen(false)
   }
 
-  const handleSelectNecesidad = (necesidadId) => {
-    handleChange({ target: { name: 'necesidadId', value: String(necesidadId) } })
+  const handleSelectNecesidad = (id) => {
+    handleChange({ target: { name: 'necesidadId', value: String(id) } })
     if (formErrors.necesidadId) setFormErrors(prev => ({ ...prev, necesidadId: '' }))
     setNecesidadOpen(false)
   }
@@ -64,7 +78,8 @@ const AsignacionesView = () => {
 
   const handleSubmitWithValidation = (e) => {
     e.preventDefault()
-    const { errors, isValid } = validateForm(form, ASIGNACION_SCHEMA)
+    const schema = buildSchema(stockDisponible)
+    const { errors, isValid } = validateForm(form, schema)
     setFormErrors(errors)
     if (!isValid) return
     handleSubmit(e)
@@ -72,16 +87,35 @@ const AsignacionesView = () => {
 
   const FieldError = ({ field }) => formErrors[field] ? (
     <div className="flex items-center gap-1.5 mt-1.5">
-      <AlertCircle size={13} style={{ color: '#E8192C' }} />
-      <span className="text-xs font-medium text-[var(--color-primary)]">{formErrors[field]}</span>
+      <AlertCircle size={13} className="text-red-600 shrink-0" />
+      <span className="text-xs font-medium text-red-600">{formErrors[field]}</span>
     </div>
   ) : null
 
+  const FieldLabel = ({ field, children }) => (
+    <label className={`block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 transition-colors ${
+      formErrors[field] ? 'text-red-600' : 'text-[var(--color-dark)]'
+    }`}>
+      {children}
+    </label>
+  )
+
   const dropdownBtnClass = (field) =>
     `w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border outline-none pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm font-medium bg-white transition-all flex items-center gap-2 sm:gap-3 text-[var(--color-dark)] ${
-      formErrors[field] ? 'border-[rgba(232,25,44,0.40)]' : 'border-[rgba(124,132,131,0.18)]'
+      formErrors[field]
+        ? 'border-red-400 focus:border-red-500'
+        : 'border-[rgba(124,132,131,0.18)] focus:border-[var(--color-primary)]'
     }`
-  const dropdownMenuClass = "absolute z-50 w-full mt-2 rounded-xl sm:rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)] max-h-56 overflow-y-auto"
+
+  const inputClass = (field) =>
+    `w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border px-4 sm:px-5 text-sm outline-none bg-white text-[var(--color-dark)] transition-all focus:scale-[1.01] ${
+      formErrors[field]
+        ? 'border-red-400 focus:border-red-500'
+        : 'border-[rgba(124,132,131,0.18)] focus:border-[var(--color-primary)]'
+    }`
+
+  const dropdownMenuClass =
+    'absolute z-50 w-full mt-2 rounded-xl sm:rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)] max-h-56 overflow-y-auto'
 
   return (
     <div className="min-h-screen px-3 sm:px-4 lg:px-6 py-8 sm:py-12 bg-[linear-gradient(to_bottom_right,rgba(232,25,44,0.04),#FFFFFF)]">
@@ -96,10 +130,6 @@ const AsignacionesView = () => {
             <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest mb-1 sm:mb-2 text-[var(--color-primary)]">Logística</p>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--color-dark)]">Asignación de Recursos</h1>
             <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-[var(--color-neutral)]">Asigna recursos del inventario a las necesidades reportadas.</p>
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)] shrink-0">
-            <ArrowRightLeft size={20} className="sm:hidden" />
-            <ArrowRightLeft size={24} className="hidden sm:block" />
           </div>
         </div>
 
@@ -140,7 +170,7 @@ const AsignacionesView = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                     <div className="relative" ref={tipoRef}>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Tipo de recurso</label>
+                      <FieldLabel field="tipoRecursoId">Tipo de recurso</FieldLabel>
                       <button type="button" onClick={() => setTipoOpen(!tipoOpen)} className={dropdownBtnClass('tipoRecursoId')}>
                         {tipoSeleccionado?.icono && <tipoSeleccionado.icono size={18} className="text-[var(--color-primary)] shrink-0" />}
                         <span className="flex-1 text-left truncate">{tipoSeleccionado?.nombre || 'Seleccionar'}</span>
@@ -153,7 +183,7 @@ const AsignacionesView = () => {
                           {inventario.map((item) => {
                             const tipo = TIPOS_RECURSO.find(t => t.id === item.tipoRecursoId)
                             const Icono = tipo?.icono
-                            const isSelected = parseInt(form.tipoRecursoId) === item.tipoRecursoId
+                            const isSelected = tipoRecursoId === item.tipoRecursoId
                             return (
                               <button
                                 key={item.id} type="button"
@@ -198,7 +228,7 @@ const AsignacionesView = () => {
                     </div>
                   ) : (
                     <div className="relative" ref={necesidadRef}>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Selecciona la necesidad</label>
+                      <FieldLabel field="necesidadId">Selecciona la necesidad</FieldLabel>
                       <button type="button" onClick={() => setNecesidadOpen(!necesidadOpen)} className={dropdownBtnClass('necesidadId')}>
                         <MapPin size={18} className="text-[var(--color-accent)] shrink-0" />
                         <span className="flex-1 text-left truncate text-xs sm:text-sm">
@@ -213,7 +243,7 @@ const AsignacionesView = () => {
                       {necesidadOpen && (
                         <div className={dropdownMenuClass}>
                           {necesidadesFiltradas.map((n) => {
-                            const isSelected = parseInt(form.necesidadId) === n.id
+                            const isSelected = necesidadId === n.id
                             const tipoNecesidad = TIPOS_RECURSO.find(t => t.id === n.tipoRecursoId)
                             const asignado = n.cantidadCubierta || 0
                             return (
@@ -249,16 +279,20 @@ const AsignacionesView = () => {
                   </div>
 
                   <div className="w-full sm:max-w-xs">
-                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Cantidad a asignar</label>
+                    <FieldLabel field="cantidadAsignada">Cantidad a asignar</FieldLabel>
                     <input
                       type="number" name="cantidadAsignada" value={form.cantidadAsignada}
                       onChange={handleChangeWithClear}
                       step="0.1" placeholder="Ej: 50"
-                      className={`w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border px-4 sm:px-5 text-sm outline-none bg-white text-[var(--color-dark)] transition-all focus:scale-[1.01] ${
-                        formErrors.cantidadAsignada ? 'border-[rgba(232,25,44,0.40)]' : 'border-[rgba(124,132,131,0.18)]'
-                      }`}
+                      className={inputClass('cantidadAsignada')}
                     />
                     <FieldError field="cantidadAsignada" />
+                    {/* Hint de stock para guiar al usuario antes de que cometa el error */}
+                    {stockDisponible !== null && !formErrors.cantidadAsignada && (
+                      <p className="text-xs text-[var(--color-neutral)] mt-1.5">
+                        Máximo disponible: <span className="font-semibold">{stockDisponible} {tipoSeleccionado?.unidad}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 

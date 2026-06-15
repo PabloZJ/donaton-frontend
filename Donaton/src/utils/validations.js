@@ -13,17 +13,19 @@ export const validators = {
 
     required: (value, label = 'Este campo') => {
         if (value === null || value === undefined || (typeof value === 'string' && !value.trim())) {
-            return `${label} es obligatorio`
+        return `${label} es obligatorio`
         }
         return null
     },
 
-    quantity: (value, { min = 1, max = Infinity, label = 'La cantidad' } = {}) => {
+    quantity: (value, { min = 1, max = Infinity, label = 'La cantidad', integer = true } = {}) => {
         const num = Number(value)
         if (value === '' || value === null || value === undefined)
-            return `${label} es obligatoria`
-        if (isNaN(num) || !Number.isInteger(num))
-            return `${label} debe ser un número entero`
+        return `${label} es obligatoria`
+        if (isNaN(num))
+        return `${label} debe ser un número`
+        if (integer && !Number.isInteger(num))
+        return `${label} debe ser un número entero`
         if (num < min) return `${label} debe ser al menos ${min}`
         if (num > max) return `${label} no puede superar ${max}`
         return null
@@ -68,12 +70,12 @@ export const validators = {
     coordinate: (value, label = 'La coordenada') => {
         const num = Number(value)
         if (value === '' || value === null || value === undefined)
-            return `${label} es obligatoria`
+        return `${label} es obligatoria`
         if (isNaN(num)) return `${label} debe ser un número`
         if (num < -180 || num > 180) return `${label} está fuera de rango`
         return null
     },
-}
+    }
 
 export const withQuantity = (opts = {}) => (v) => validators.quantity(v, opts)
 export const withRequired = (label) => (v) => validators.required(v, label)
@@ -82,21 +84,21 @@ export const withMaxLength = (max, label) => (v) => validators.maxLength(v, { ma
 export const withDate = (opts = {}) => (v) => validators.date(v, opts)
 export const withSelect = (label) => (v) => validators.select(v, label)
 
-export const compose = (...validators) => (value) => {
+    export const compose = (...validators) => (value) => {
     for (const validator of validators) {
         const error = validator(value)
         if (error) return error
     }
     return null
-}
+    }
 
-export const validateForm = (form, schema) => {
+    export const validateForm = (form, schema) => {
     const errors = {}
     for (const [field, validator] of Object.entries(schema)) {
         const error = validator(form[field], form)
         if (error) errors[field] = error
     }
     return { errors, isValid: Object.keys(errors).length === 0 }
-}
+    }
 
 export const validateField = (value, validator, form) => validator(value, form)

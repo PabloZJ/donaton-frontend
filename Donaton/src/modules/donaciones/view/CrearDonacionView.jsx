@@ -23,14 +23,14 @@ const CrearDonacionView = () => {
 
   const { form, handleChange, handleSubmit, centros, loading, loadingData, error, success } = useCrearDonacionViewModel()
 
-  const regiones = centros.length > 0 
+  const regiones = centros.length > 0
     ? [...new Map(centros.map(c => [c.region.id, c.region])).values()]
     : []
-  
-  const centrosFiltrados = regionSeleccionada 
-    ? centros.filter(c => c.region.id === parseInt(regionSeleccionada)) 
+
+  const centrosFiltrados = regionSeleccionada
+    ? centros.filter(c => c.region.id === parseInt(regionSeleccionada))
     : []
-  
+
   const tipoSeleccionado = TIPOS_RECURSO.find(t => t.id === parseInt(form.tipoRecursoId))
   const regionSeleccionadaObj = regiones.find(r => r.id === parseInt(regionSeleccionada))
   const centroSeleccionado = centrosFiltrados.find(c => c.id === parseInt(form.centroAcopioId))
@@ -69,7 +69,6 @@ const CrearDonacionView = () => {
     const { name, value } = e.target
     if (name === 'fecha') setFecha(value)
     if (name === 'hora') setHora(value)
-    
     const newFecha = name === 'fecha' ? value : fecha
     const newHora = name === 'hora' ? value : hora
     if (newFecha && newHora) {
@@ -79,57 +78,75 @@ const CrearDonacionView = () => {
 
   const fechaMinima = new Date().toISOString().slice(0, 10)
 
+  const inputClass = "w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border border-[rgba(124,132,131,0.18)] px-3 sm:px-4 text-sm outline-none bg-white text-[var(--color-dark)]"
+  const dropdownBtnClass = "w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border border-[rgba(124,132,131,0.18)] outline-none pl-3 sm:pl-4 pr-3 sm:pr-4 text-sm font-medium bg-white transition-all flex items-center gap-2 sm:gap-3 text-[var(--color-dark)]"
+  const sectionIconClass = "w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0"
+
   return (
-    <div className="min-h-screen px-4 py-12 bg-[linear-gradient(to_bottom_right,rgba(232,25,44,0.04),#FFFFFF)]">
-      <div className="fixed top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none bg-[rgba(232,25,44,0.06)]" />
-      <div className="fixed bottom-0 left-0 w-80 h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.06)]" />
+    <div className="min-h-screen px-3 sm:px-4 lg:px-6 py-8 sm:py-12 bg-[linear-gradient(to_bottom_right,rgba(232,25,44,0.04),#FFFFFF)]">
+      <div className="fixed top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 rounded-full blur-3xl pointer-events-none bg-[rgba(232,25,44,0.06)]" />
+      <div className="fixed bottom-0 left-0 w-56 sm:w-80 h-56 sm:h-80 rounded-full blur-3xl pointer-events-none bg-[rgba(244,172,69,0.06)]" />
 
       <div className="max-w-3xl mx-auto relative">
-        <div className="flex items-start justify-between gap-4 mb-10">
+
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3 sm:gap-4 mb-7 sm:mb-10">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest mb-2 text-[var(--color-primary)]">Panel donante</p>
-            <h1 className="text-4xl font-black text-[var(--color-dark)]">Nueva Donación</h1>
-            <p className="mt-2 text-sm text-[var(--color-neutral)]">Coordina tu entrega con un centro de acopio cercano.</p>
+            <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest mb-1 sm:mb-2 text-[var(--color-primary)]">
+              Panel donante
+            </p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--color-dark)]">
+              Nueva Donación
+            </h1>
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-[var(--color-neutral)]">
+              Coordina tu entrega con un centro de acopio cercano.
+            </p>
           </div>
 
           <button
             onClick={() => navigate('/donaciones')}
-            className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white transition-all hover:scale-[1.02] border border-[rgba(124,132,131,0.15)] text-[var(--color-dark)]"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white transition-all hover:scale-[1.02] border border-[rgba(124,132,131,0.15)] text-[var(--color-dark)] text-sm font-medium shrink-0"
           >
-            <ArrowLeft size={18} />
-            Volver
+            <ArrowLeft size={16} className="sm:hidden" />
+            <ArrowLeft size={18} className="hidden sm:block" />
+            <span className="hidden sm:inline">Volver</span>
           </button>
         </div>
 
-        <div className="rounded-[2rem] p-8 bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-[12px]">
-          <form onSubmit={handleSubmit} className="space-y-10">
+        {/* Card */}
+        <div className="rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 bg-[rgba(255,255,255,0.82)] border border-[rgba(124,132,131,0.12)] shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-[12px]">
+          <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
 
+            {/* Sección 1 — Qué donar */}
             <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]">
-                  {tipoSeleccionado?.icono && <tipoSeleccionado.icono size={22} />}
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                <div className={`${sectionIconClass} bg-[rgba(232,25,44,0.08)] text-[var(--color-primary)]`}>
+                  {tipoSeleccionado?.icono
+                    ? <tipoSeleccionado.icono size={20} />
+                    : <HeartHandshake size={20} />}
                 </div>
                 <div>
-                  <h2 className="font-black text-xl text-[var(--color-dark)]">¿Qué vas a donar?</h2>
-                  <p className="text-sm text-[var(--color-neutral)]">Selecciona el recurso y la cantidad.</p>
+                  <h2 className="font-black text-base sm:text-xl text-[var(--color-dark)]">¿Qué vas a donar?</h2>
+                  <p className="text-xs sm:text-sm text-[var(--color-neutral)]">Selecciona el recurso y la cantidad.</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                {/* Tipo recurso */}
                 <div className="relative" ref={tipoRef}>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Tipo de recurso</label>
-                  <button
-                    type="button"
-                    onClick={() => setTipoOpen(!tipoOpen)}
-                    className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] outline-none pl-4 pr-4 text-sm font-medium bg-white transition-all flex items-center gap-3 text-[var(--color-dark)]"
-                  >
-                    {tipoSeleccionado?.icono && <tipoSeleccionado.icono size={20} className="text-[var(--color-primary)]" />}
-                    <span className="flex-1 text-left">{tipoSeleccionado?.nombre || 'Seleccionar'}</span>
-                    <ChevronDown size={18} className={`text-[var(--color-neutral)] transition-transform ${tipoOpen ? 'rotate-180' : ''}`} />
+                  <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">
+                    Tipo de recurso
+                  </label>
+                  <button type="button" onClick={() => setTipoOpen(!tipoOpen)} className={dropdownBtnClass}>
+                    {tipoSeleccionado?.icono && (
+                      <tipoSeleccionado.icono size={18} className="text-[var(--color-primary)] shrink-0" />
+                    )}
+                    <span className="flex-1 text-left truncate">{tipoSeleccionado?.nombre || 'Seleccionar'}</span>
+                    <ChevronDown size={16} className={`text-[var(--color-neutral)] transition-transform shrink-0 ${tipoOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {tipoOpen && (
-                    <div className="absolute z-50 w-full mt-2 rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)]">
+                    <div className="absolute z-50 w-full mt-2 rounded-xl sm:rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)] max-h-56 overflow-y-auto">
                       {TIPOS_RECURSO.map((tipo) => {
                         const Icono = tipo.icono
                         const isSelected = parseInt(form.tipoRecursoId) === tipo.id
@@ -138,11 +155,11 @@ const CrearDonacionView = () => {
                             key={tipo.id}
                             type="button"
                             onClick={() => handleSelectTipo(tipo.id)}
-                            className={`w-full px-4 py-3 flex items-center gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
+                            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
                           >
-                            {Icono && <Icono size={18} className={isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'} />}
+                            {Icono && <Icono size={16} className={isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'} />}
                             <span className="flex-1 text-left">{tipo.nombre}</span>
-                            {isSelected && <Check size={16} className="text-[var(--color-primary)]" />}
+                            {isSelected && <Check size={15} className="text-[var(--color-primary)]" />}
                           </button>
                         )
                       })}
@@ -150,46 +167,47 @@ const CrearDonacionView = () => {
                   )}
                 </div>
 
+                {/* Cantidad */}
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">
+                  <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">
                     Cantidad
-                    {tipoSeleccionado && <span className="ml-1 text-[var(--color-neutral)]">({tipoSeleccionado.unidad})</span>}
+                    {tipoSeleccionado && (
+                      <span className="ml-1 text-[var(--color-neutral)]">({tipoSeleccionado.unidad})</span>
+                    )}
                   </label>
                   <input
                     type="number" name="cantidad" value={form.cantidad} onChange={handleChange}
                     min="0.1" step="0.1" required placeholder="Ej: 10"
-                    className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] px-4 text-sm outline-none bg-white text-[var(--color-dark)]"
+                    className={inputClass}
                   />
                 </div>
               </div>
             </div>
 
+            {/* Sección 2 — Centro de acopio */}
             <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(244,172,69,0.10)] text-[var(--color-accent)]">
-                  <Building2 size={22} />
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                <div className={`${sectionIconClass} bg-[rgba(244,172,69,0.10)] text-[var(--color-accent)]`}>
+                  <Building2 size={20} />
                 </div>
                 <div>
-                  <h2 className="font-black text-xl text-[var(--color-dark)]">Centro de acopio</h2>
-                  <p className="text-sm text-[var(--color-neutral)]">Elige dónde entregarás tu donación.</p>
+                  <h2 className="font-black text-base sm:text-xl text-[var(--color-dark)]">Centro de acopio</h2>
+                  <p className="text-xs sm:text-sm text-[var(--color-neutral)]">Elige dónde entregarás tu donación.</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                {/* Región */}
                 <div className="relative" ref={regionRef}>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Región</label>
-                  <button
-                    type="button"
-                    onClick={() => setRegionOpen(!regionOpen)}
-                    className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] outline-none pl-4 pr-4 text-sm font-medium bg-white transition-all flex items-center gap-3 text-[var(--color-dark)]"
-                  >
-                    <MapPinned size={20} className="text-[var(--color-accent)]" />
-                    <span className="flex-1 text-left">{regionSeleccionadaObj?.nombre || 'Selecciona una región'}</span>
-                    <ChevronDown size={18} className={`text-[var(--color-neutral)] transition-transform ${regionOpen ? 'rotate-180' : ''}`} />
+                  <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Región</label>
+                  <button type="button" onClick={() => setRegionOpen(!regionOpen)} className={dropdownBtnClass}>
+                    <MapPinned size={18} className="text-[var(--color-accent)] shrink-0" />
+                    <span className="flex-1 text-left truncate">{regionSeleccionadaObj?.nombre || 'Selecciona una región'}</span>
+                    <ChevronDown size={16} className={`text-[var(--color-neutral)] transition-transform shrink-0 ${regionOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {regionOpen && (
-                    <div className="absolute z-50 w-full mt-2 rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)]">
+                    <div className="absolute z-50 w-full mt-2 rounded-xl sm:rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)] max-h-56 overflow-y-auto">
                       {regiones.map((region) => {
                         const isSelected = parseInt(regionSeleccionada) === region.id
                         return (
@@ -197,11 +215,11 @@ const CrearDonacionView = () => {
                             key={region.id}
                             type="button"
                             onClick={() => handleSelectRegion(region.id)}
-                            className={`w-full px-4 py-3 flex items-center gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(244,172,69,0.06)] text-[var(--color-accent)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
+                            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(244,172,69,0.06)] text-[var(--color-accent)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
                           >
-                            <MapPinned size={18} className={isSelected ? 'text-[var(--color-accent)]' : 'text-[var(--color-neutral)]'} />
+                            <MapPinned size={16} className={isSelected ? 'text-[var(--color-accent)]' : 'text-[var(--color-neutral)]'} />
                             <span className="flex-1 text-left">{region.nombre}</span>
-                            {isSelected && <Check size={16} className="text-[var(--color-accent)]" />}
+                            {isSelected && <Check size={15} className="text-[var(--color-accent)]" />}
                           </button>
                         )
                       })}
@@ -209,21 +227,24 @@ const CrearDonacionView = () => {
                   )}
                 </div>
 
+                {/* Centro */}
                 <div className="relative" ref={centroRef}>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Centro de acopio</label>
+                  <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Centro de acopio</label>
                   <button
                     type="button"
                     onClick={() => regionSeleccionada && setCentroOpen(!centroOpen)}
                     disabled={!regionSeleccionada}
-                    className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] outline-none pl-4 pr-4 text-sm font-medium bg-white transition-all flex items-center gap-3 disabled:opacity-50 text-[var(--color-dark)]"
+                    className={`${dropdownBtnClass} disabled:opacity-50`}
                   >
-                    <MapPin size={20} className={regionSeleccionada ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'} />
-                    <span className="flex-1 text-left">{centroSeleccionado?.nombre || (regionSeleccionada ? 'Selecciona un centro' : 'Primero elige una región')}</span>
-                    <ChevronDown size={18} className={`text-[var(--color-neutral)] transition-transform ${centroOpen ? 'rotate-180' : ''}`} />
+                    <MapPin size={18} className={`shrink-0 ${regionSeleccionada ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'}`} />
+                    <span className="flex-1 text-left truncate text-xs sm:text-sm">
+                      {centroSeleccionado?.nombre || (regionSeleccionada ? 'Selecciona un centro' : 'Primero elige una región')}
+                    </span>
+                    <ChevronDown size={16} className={`text-[var(--color-neutral)] transition-transform shrink-0 ${centroOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {centroOpen && regionSeleccionada && (
-                    <div className="absolute z-50 w-full mt-2 rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)]">
+                    <div className="absolute z-50 w-full mt-2 rounded-xl sm:rounded-2xl bg-white overflow-hidden border border-[rgba(124,132,131,0.18)] shadow-[0_10px_40px_rgba(0,0,0,0.12)] max-h-56 overflow-y-auto">
                       {centrosFiltrados.map((centro) => {
                         const isSelected = parseInt(form.centroAcopioId) === centro.id
                         return (
@@ -231,14 +252,14 @@ const CrearDonacionView = () => {
                             key={centro.id}
                             type="button"
                             onClick={() => handleSelectCentro(centro.id)}
-                            className={`w-full px-4 py-3 flex items-center gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
+                            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 text-sm font-medium transition-all ${isSelected ? 'bg-[rgba(232,25,44,0.06)] text-[var(--color-primary)]' : 'text-[var(--color-dark)] hover:bg-gray-50'}`}
                           >
-                            <MapPin size={18} className={isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'} />
-                            <div className="flex-1 text-left">
-                              <div>{centro.nombre}</div>
-                              <div className="text-xs text-[var(--color-neutral)]">{centro.direccion}</div>
+                            <MapPin size={16} className={`shrink-0 ${isSelected ? 'text-[var(--color-primary)]' : 'text-[var(--color-neutral)]'}`} />
+                            <div className="flex-1 text-left min-w-0">
+                              <div className="truncate">{centro.nombre}</div>
+                              <div className="text-xs text-[var(--color-neutral)] truncate">{centro.direccion}</div>
                             </div>
-                            {isSelected && <Check size={16} className="text-[var(--color-primary)]" />}
+                            {isSelected && <Check size={15} className="text-[var(--color-primary)] shrink-0" />}
                           </button>
                         )
                       })}
@@ -248,51 +269,55 @@ const CrearDonacionView = () => {
               </div>
             </div>
 
+            {/* Sección 3 — Detalles adicionales */}
             <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[rgba(124,132,131,0.08)] text-[var(--color-neutral)]">
-                  <Clock size={22} />
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                <div className={`${sectionIconClass} bg-[rgba(124,132,131,0.08)] text-[var(--color-neutral)]`}>
+                  <Clock size={20} />
                 </div>
                 <div>
-                  <h2 className="font-black text-xl text-[var(--color-dark)]">Detalles adicionales</h2>
-                  <p className="text-sm text-[var(--color-neutral)]">Información opcional sobre tu entrega.</p>
+                  <h2 className="font-black text-base sm:text-xl text-[var(--color-dark)]">Detalles adicionales</h2>
+                  <p className="text-xs sm:text-sm text-[var(--color-neutral)]">Información opcional sobre tu entrega.</p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-4 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                  {/* Fecha */}
                   <div>
-                    <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Fecha</label>
+                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Fecha</label>
                     <div className="relative">
-                      <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-neutral)] pointer-events-none" />
+                      <Calendar size={16} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--color-neutral)] pointer-events-none" />
                       <input
                         type="date" name="fecha" value={fecha} onChange={handleFechaChange}
                         min={fechaMinima}
-                        className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] pl-12 pr-4 text-sm outline-none bg-white text-[var(--color-dark)]"
+                        className="w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border border-[rgba(124,132,131,0.18)] pl-9 sm:pl-12 pr-3 sm:pr-4 text-sm outline-none bg-white text-[var(--color-dark)]"
                       />
                     </div>
                   </div>
 
+                  {/* Hora */}
                   <div>
-                    <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Hora</label>
+                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Hora</label>
                     <div className="relative">
-                      <Clock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-neutral)] pointer-events-none" />
+                      <Clock size={16} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--color-neutral)] pointer-events-none" />
                       <input
                         type="time" name="hora" value={hora} onChange={handleFechaChange}
-                        className="w-full h-14 rounded-2xl border border-[rgba(124,132,131,0.18)] pl-12 pr-4 text-sm outline-none bg-white text-[var(--color-dark)]"
+                        className="w-full h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl border border-[rgba(124,132,131,0.18)] pl-9 sm:pl-12 pr-3 sm:pr-4 text-sm outline-none bg-white text-[var(--color-dark)]"
                       />
                     </div>
                   </div>
                 </div>
 
+                {/* Observación */}
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--color-dark)]">Observación</label>
+                  <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-[var(--color-dark)]">Observación</label>
                   <div className="relative">
-                    <MessageSquare size={18} className="absolute left-4 top-4 text-[var(--color-neutral)]" />
+                    <MessageSquare size={16} className="absolute left-3 sm:left-4 top-3.5 text-[var(--color-neutral)]" />
                     <textarea
                       name="observacion" value={form.observacion} onChange={handleChange}
                       rows={4} placeholder="Ej: productos sellados, ropa infantil, etc."
-                      className="w-full rounded-2xl border border-[rgba(124,132,131,0.18)] pl-12 pr-4 py-3 text-sm outline-none resize-none bg-white text-[var(--color-dark)]"
+                      className="w-full rounded-xl sm:rounded-2xl border border-[rgba(124,132,131,0.18)] pl-9 sm:pl-12 pr-3 sm:pr-4 py-3 text-sm outline-none resize-none bg-white text-[var(--color-dark)]"
                     />
                   </div>
                 </div>
@@ -300,22 +325,22 @@ const CrearDonacionView = () => {
             </div>
 
             {error && (
-              <div className="rounded-2xl px-4 py-3 text-sm font-medium bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
+              <div className="rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-[rgba(232,25,44,0.08)] border border-[rgba(232,25,44,0.15)] text-[var(--color-primary)]">
                 {error}
               </div>
             )}
 
-            <div className="flex gap-4 pt-2">
+            {/* Botones */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1 sm:pt-2">
               <button
                 type="button" onClick={() => navigate('/donaciones')}
-                className="flex-1 h-14 rounded-2xl font-bold transition-all hover:scale-[1.01] border border-[rgba(124,132,131,0.15)] text-[var(--color-dark)] bg-white"
+                className="flex-1 h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base transition-all hover:scale-[1.01] border border-[rgba(124,132,131,0.15)] text-[var(--color-dark)] bg-white"
               >
                 Cancelar
               </button>
-
               <button
                 type="submit" disabled={loading}
-                className="flex-1 h-14 rounded-2xl text-white font-bold transition-all hover:scale-[1.01] disabled:opacity-70 bg-[var(--color-primary)] shadow-[0_8px_24px_rgba(232,25,44,0.25)]"
+                className="flex-1 h-11 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl text-white font-bold text-sm sm:text-base transition-all hover:scale-[1.01] disabled:opacity-70 bg-[var(--color-primary)] shadow-[0_8px_24px_rgba(232,25,44,0.25)]"
               >
                 {loading ? 'Registrando...' : 'Confirmar donación'}
               </button>

@@ -1,18 +1,8 @@
-// HomeView.jsx
-
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import { getRolPath } from '../../../router/getRolPath'
-
-import {
-  HeartHandshake,
-  PackageCheck,
-  Building2,
-  ArrowRight,
-  Users,
-  MapPinned,
-  Boxes
-} from 'lucide-react'
+import { HeartHandshake, ArrowRight, ChevronDown } from 'lucide-react'
+import fotodonacion from '../../../assets/fotodonacion.jpg'
 
 const COLORS = {
   primary: '#E8192C',
@@ -21,39 +11,22 @@ const COLORS = {
   accent: '#F4AC45',
 }
 
+// Copy reescrito para sonar humano
 const steps = [
   {
-    icon: <HeartHandshake size={30} />,
-    title: 'Dona',
-    desc: 'Registra donaciones físicas u online y ayuda rápidamente a quienes más lo necesitan.',
+    tag: 'Tú',
+    title: 'Registras lo que puedes dar',
+    desc: 'Agua, ropa, alimentos, medicamentos. Lo que sea. Nosotros nos encargamos de que llegue a donde más falta hace.',
   },
   {
-    icon: <Building2 size={30} />,
-    title: 'Acopiamos',
-    desc: 'Los centros de acopio organizan y distribuyen recursos en tiempo real.',
+    tag: 'Nosotros',
+    title: 'Lo organizamos en tu nombre',
+    desc: 'Cada centro de acopio sabe exactamente qué tiene, qué necesita y cuándo enviar. Sin llamadas, sin confusión.',
   },
   {
-    icon: <PackageCheck size={30} />,
-    title: 'Ayudamos',
-    desc: 'Las ayudas llegan a comunidades afectadas de manera eficiente y coordinada.',
-  },
-]
-
-const stats = [
-  {
-    icon: <Users size={22} />,
-    number: '+12K',
-    label: 'Donaciones',
-  },
-  {
-    icon: <MapPinned size={22} />,
-    number: '18',
-    label: 'Regiones',
-  },
-  {
-    icon: <Boxes size={22} />,
-    number: '45',
-    label: 'Centros activos',
+    tag: 'La comunidad',
+    title: 'Recibe ayuda cuando la necesita',
+    desc: 'Las municipalidades reportan necesidades reales. Tu donación va directo ahí, no a una bodega olvidada.',
   },
 ]
 
@@ -63,403 +36,168 @@ const HomeView = () => {
   return (
     <div className="bg-white overflow-hidden">
 
-      <section
-        className="relative"
-        style={{
-          background:
-            'linear-gradient(to bottom right, rgba(232,25,44,0.05), rgba(244,172,69,0.06), #FFFFFF)',
-        }}
-      >
-
+      {/* HERO */}
+      <section className="relative h-screen min-h-[600px] flex flex-col justify-end">
+        <img
+          src={fotodonacion}
+          alt="Ayuda humanitaria"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <div
-          className="absolute top-[-120px] left-[-80px] w-80 h-80 rounded-full blur-3xl"
-          style={{ backgroundColor: 'rgba(232,25,44,0.10)' }}
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(22,10,12,0.95) 0%, rgba(22,10,12,0.55) 50%, rgba(22,10,12,0.15) 100%)' }}
         />
 
-        <div
-          className="absolute bottom-[-120px] right-[-80px] w-96 h-96 rounded-full blur-3xl"
-          style={{ backgroundColor: 'rgba(244,172,69,0.10)' }}
-        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20 lg:pb-24 w-full">
+          <div className="max-w-3xl">
 
-        <div className="relative max-w-7xl mx-auto px-4 py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-          <div>
-
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-              style={{
-                backgroundColor: 'rgba(232,25,44,0.08)',
-                color: COLORS.primary,
-              }}
-            >
-              <HeartHandshake size={16} />
-              Tu ayuda puede salvar vidas
-            </div>
-
-            <h1
-              className="text-5xl lg:text-7xl font-black leading-[1.05] mb-6"
-              style={{ color: COLORS.dark }}
-            >
-              Juntos podemos{' '}
-              <span style={{ color: COLORS.primary }}>
-                cambiar realidades
-              </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-[1.05] mb-4 sm:mb-6">
+              Cuando Chile necesita ayuda,{' '}
+              <span style={{ color: COLORS.primary }}>tú puedes estar ahí.</span>
             </h1>
 
-            <p
-              className="text-lg leading-relaxed max-w-xl mb-10"
-              style={{ color: COLORS.neutral }}
-            >
-              Donaton conecta donantes, municipalidades y centros de acopio
-              para coordinar ayuda humanitaria de manera rápida y eficiente
-              frente a desastres y emergencias en todo Chile.
+            <p className="text-base sm:text-lg text-white/70 max-w-xl leading-relaxed mb-8 sm:mb-10">
+              Donaton conecta a quienes quieren ayudar con quienes más lo necesitan — sin intermediarios confusos, sin trámites largos.
             </p>
 
             {isAuthenticated ? (
               <Link
                 to={getRolPath(rol)}
-                className="
-                  inline-flex items-center gap-2
-                  px-8 py-4 rounded-2xl
-                  text-white font-bold text-lg
-                  transition-all duration-200
-                  hover:-translate-y-1
-                "
-                style={{
-                  backgroundColor: COLORS.primary,
-                  boxShadow: '0 14px 30px rgba(232,25,44,0.25)',
-                }}
+                className="inline-flex items-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base transition-all hover:gap-4"
+                style={{ backgroundColor: COLORS.primary, boxShadow: '0 0 40px rgba(232,25,44,0.4)' }}
               >
-                Ir a mi panel
-                <ArrowRight size={20} />
+                Ir a mi panel <ArrowRight size={18} />
               </Link>
             ) : (
-              <div className="flex flex-wrap gap-4">
-
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link
                   to="/register"
-                  className="
-                    inline-flex items-center gap-2
-                    px-8 py-4 rounded-2xl
-                    text-white font-bold text-lg
-                    transition-all duration-200
-                    hover:-translate-y-1
-                  "
-                  style={{
-                    backgroundColor: COLORS.primary,
-                    boxShadow: '0 14px 30px rgba(232,25,44,0.25)',
-                  }}
+                  className="inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base transition-all hover:gap-4"
+                  style={{ backgroundColor: COLORS.primary, boxShadow: '0 0 40px rgba(232,25,44,0.4)' }}
                 >
-                  Donar ahora
-                  <HeartHandshake size={20} />
+                  Quiero donar <HeartHandshake size={18} />
                 </Link>
-
                 <Link
                   to="/login"
-                  className="
-                    inline-flex items-center gap-2
-                    px-8 py-4 rounded-2xl
-                    border
-                    bg-white/80 backdrop-blur-sm
-                    font-bold text-lg
-                    transition-all duration-200
-                    hover:bg-white
-                    hover:-translate-y-1
-                  "
-                  style={{
-                    borderColor: 'rgba(232,25,44,0.12)',
-                    color: COLORS.primary,
-                  }}
+                  className="inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base text-white/90 transition-all hover:text-white"
+                  style={{ border: '1px solid rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.07)' }}
                 >
-                  Iniciar sesión
+                  Ya tengo cuenta
                 </Link>
-
               </div>
             )}
 
-            <div className="flex flex-wrap gap-8 mt-14">
-
-              {stats.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4"
-                >
-
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style={{
-                      backgroundColor: 'rgba(232,25,44,0.08)',
-                      color: COLORS.primary,
-                    }}
-                  >
-                    {item.icon}
-                  </div>
-
-                  <div>
-                    <p
-                      className="text-2xl font-black"
-                      style={{ color: COLORS.dark }}
-                    >
-                      {item.number}
-                    </p>
-
-                    <p
-                      className="text-sm"
-                      style={{ color: COLORS.neutral }}
-                    >
-                      {item.label}
-                    </p>
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-
-          <div className="relative hidden lg:block">
-
-            <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl">
-
-              <img
-                src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1200&auto=format&fit=crop"
-                alt="Ayuda humanitaria"
-                className="w-full h-[650px] object-cover"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-
-            </div>
-
+            {/* Stats — texto plano, sin iconos en cajitas */}
             <div
-              className="
-                absolute bottom-8 -left-10
-                bg-white/90 backdrop-blur-md
-                rounded-3xl
-                p-5
-                shadow-2xl
-                border
-              "
-              style={{
-                borderColor: 'rgba(255,255,255,0.4)',
-              }}
+              className="flex flex-wrap gap-6 sm:gap-10 mt-10 sm:mt-14 pt-8 sm:pt-10 border-t"
+              style={{ borderColor: 'rgba(255,255,255,0.10)' }}
             >
-
-              <div className="flex items-center gap-4">
-
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-white"
-                  style={{ backgroundColor: COLORS.primary }}
-                >
-                  <PackageCheck size={26} />
-                </div>
-
-                <div>
-
-                  <p
-                    className="font-bold"
-                    style={{ color: COLORS.dark }}
-                  >
-                    Donaciones activas
-                  </p>
-
-                  <p
-                    className="text-sm"
-                    style={{ color: COLORS.neutral }}
-                  >
-                    Coordinadas en tiempo real
-                  </p>
-
-                </div>
-
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-white leading-none">+12.000</p>
+                <p className="text-xs text-white/50 mt-1">donaciones coordinadas</p>
               </div>
-
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-white leading-none">18</p>
+                <p className="text-xs text-white/50 mt-1">regiones del país</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-white leading-none">45</p>
+                <p className="text-xs text-white/50 mt-1">centros de acopio activos</p>
+              </div>
             </div>
 
           </div>
+        </div>
 
+        <div className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 text-white/40 animate-bounce">
+          <ChevronDown size={22} />
         </div>
       </section>
 
-      <section
-        className="py-24 px-4"
-        style={{
-          backgroundColor: 'rgba(124,132,131,0.05)',
-        }}
-      >
-
+      {/* CÓMO FUNCIONA — layout editorial, sin 01/02/03 decorativos */}
+      <section className="py-20 sm:py-28 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
 
-          <div className="text-center mb-16">
-
-            <span
-              className="text-sm font-bold uppercase tracking-[0.2em]"
-              style={{ color: COLORS.primary }}
-            >
-              ¿Cómo funciona?
+          <div className="mb-14 sm:mb-20">
+            <span className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: COLORS.primary }}>
+              Cómo funciona
             </span>
-
-            <h2
-              className="text-4xl lg:text-5xl font-black mt-4"
-              style={{ color: COLORS.dark }}
-            >
-              Tu apoyo se transforma en ayuda real
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mt-3 leading-tight max-w-xl" style={{ color: COLORS.dark }}>
+              Donar no debería ser complicado.
             </h2>
-
-            <p
-              className="mt-4 max-w-2xl mx-auto leading-relaxed"
-              style={{ color: COLORS.neutral }}
-            >
-              Coordinamos recursos, personas y centros de acopio para responder
-              rápidamente ante emergencias y desastres.
+            <p className="mt-4 text-base sm:text-lg leading-relaxed max-w-lg" style={{ color: COLORS.neutral }}>
+              Tres actores, un mismo objetivo: que la ayuda llegue a tiempo y al lugar correcto.
             </p>
-
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
+          {/* Lista de pasos — horizontal en desktop, vertical en móvil */}
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-0 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: 'rgba(124,132,131,0.15)' }}>
             {steps.map((item, i) => (
               <div
                 key={i}
-                className="
-                  group
-                  bg-white
-                  p-8 rounded-3xl
-                  transition-all duration-300
-                  hover:-translate-y-2
-                  hover:shadow-2xl
-                "
-                style={{
-                  border: '1px solid rgba(124,132,131,0.10)',
-                }}
+                className="py-8 sm:py-0 sm:px-8 first:sm:pl-0 last:sm:pr-0"
+                style={{ borderColor: 'rgba(124,132,131,0.15)' }}
               >
-
-                <div
-                  className="
-                    w-16 h-16 rounded-2xl
-                    flex items-center justify-center
-                    mb-6
-                    transition-all duration-300
-                  "
-                  style={{
-                    backgroundColor: 'rgba(232,25,44,0.08)',
-                    color: COLORS.primary,
-                  }}
+                <span
+                  className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-2.5 py-1 rounded-full"
+                  style={{ backgroundColor: i === 0 ? 'rgba(232,25,44,0.08)' : i === 1 ? 'rgba(244,172,69,0.10)' : 'rgba(34,197,94,0.08)', color: i === 0 ? COLORS.primary : i === 1 ? '#B87A00' : '#16A34A' }}
                 >
-                  {item.icon}
-                </div>
-
-                <h3
-                  className="text-2xl font-bold mb-3"
-                  style={{ color: COLORS.dark }}
-                >
+                  {item.tag}
+                </span>
+                <h3 className="text-lg sm:text-xl font-black mt-2 mb-3 leading-snug" style={{ color: COLORS.dark }}>
                   {item.title}
                 </h3>
-
-                <p
-                  className="leading-relaxed"
-                  style={{ color: COLORS.neutral }}
-                >
+                <p className="text-sm leading-relaxed" style={{ color: COLORS.neutral }}>
                   {item.desc}
                 </p>
-
               </div>
             ))}
-
           </div>
 
         </div>
       </section>
 
-      <section
-        className="relative overflow-hidden py-24 px-4"
-        style={{
-          background:
-            'linear-gradient(to bottom right, rgba(232,25,44,0.07), rgba(244,172,69,0.08))',
-        }}
-      >
-
+      {/* CTA FINAL — simple, sin repetir el pitch */}
+      <section className="px-4 sm:px-6 pb-20 sm:pb-24">
         <div
-          className="absolute top-0 left-0 w-80 h-80 rounded-full blur-3xl"
-          style={{ backgroundColor: 'rgba(232,25,44,0.08)' }}
-        />
+          className="max-w-6xl mx-auto rounded-2xl sm:rounded-3xl px-8 sm:px-14 py-12 sm:py-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8"
+          style={{ backgroundColor: COLORS.dark }}
+        >
+          <div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
+              ¿Listo para ayudar?
+            </h2>
+            <p className="mt-2 text-sm text-white/50">
+              Toma menos de dos minutos registrarte.
+            </p>
+          </div>
 
-        <div
-          className="absolute bottom-0 right-0 w-96 h-96 rounded-full blur-3xl"
-          style={{ backgroundColor: 'rgba(244,172,69,0.08)' }}
-        />
-
-        <div className="relative max-w-4xl mx-auto text-center">
-
-          <span
-            className="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-6"
-            style={{
-              backgroundColor: 'rgba(232,25,44,0.08)',
-              color: COLORS.primary,
-            }}
-          >
-            Donaton Chile
-          </span>
-
-          <h2
-            className="text-4xl lg:text-5xl font-black leading-tight mb-6"
-            style={{ color: COLORS.dark }}
-          >
-            Tu ayuda puede llegar más lejos de lo que imaginas
-          </h2>
-
-          <p
-            className="text-lg leading-relaxed max-w-2xl mx-auto mb-10"
-            style={{ color: COLORS.neutral }}
-          >
-            Únete a una red solidaria preparada para actuar rápidamente
-            frente a emergencias y desastres en todo Chile.
-          </p>
-
-          {!isAuthenticated && (
-            <div className="flex flex-wrap justify-center gap-4">
-
+          {!isAuthenticated ? (
+            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
               <Link
                 to="/register"
-                className="
-                  inline-flex items-center gap-2
-                  px-8 py-4 rounded-2xl
-                  text-white font-bold text-lg
-                  transition-all duration-200
-                  hover:-translate-y-1
-                "
-                style={{
-                  backgroundColor: COLORS.primary,
-                  boxShadow: '0 14px 30px rgba(232,25,44,0.25)',
-                }}
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm transition-all hover:gap-3"
+                style={{ backgroundColor: COLORS.primary, boxShadow: '0 0 30px rgba(232,25,44,0.35)' }}
               >
-                Comenzar ahora
+                Crear cuenta <ArrowRight size={16} />
               </Link>
-
               <Link
                 to="/login"
-                className="
-                  inline-flex items-center gap-2
-                  px-8 py-4 rounded-2xl
-                  border
-                  bg-white/70 backdrop-blur-sm
-                  font-bold text-lg
-                  transition-all duration-200
-                  hover:bg-white
-                  hover:-translate-y-1
-                "
-                style={{
-                  borderColor: 'rgba(232,25,44,0.12)',
-                  color: COLORS.primary,
-                }}
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl font-bold text-sm text-white/70 hover:text-white transition-all"
+                style={{ border: '1px solid rgba(255,255,255,0.15)' }}
               >
                 Iniciar sesión
               </Link>
-
             </div>
+          ) : (
+            <Link
+              to={getRolPath(rol)}
+              className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl text-white font-bold text-sm transition-all hover:gap-3 shrink-0"
+              style={{ backgroundColor: COLORS.primary }}
+            >
+              Ir a mi panel <ArrowRight size={16} />
+            </Link>
           )}
-
         </div>
       </section>
 

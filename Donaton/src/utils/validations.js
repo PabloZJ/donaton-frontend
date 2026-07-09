@@ -1,49 +1,81 @@
 export const validators = {
     email: (value) => {
         if (!value?.trim()) return 'El correo electrónico es obligatorio'
-        if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(value)) return 'Ingresa un correo válido'
+        const v = value.trim()
+
+        if (v.length > 254) return 'El correo es demasiado largo'
+        if (v.includes('..')) return 'El correo no puede tener puntos consecutivos'
+
+        const match = /^([^\s@]+)@([^\s@]+)$/.exec(v)
+        if (!match) return 'Ingresa un correo válido'
+        const [, local, domain] = match
+
+        if (local.length > 64) return 'La parte antes del @ es demasiado larga'
+        if (/^\.|\.$/.test(local)) return 'El correo no puede empezar o terminar con punto'
+        if (!/^[a-zA-Z0-9._%+-]+$/.test(local)) return 'El correo contiene caracteres no permitidos'
+
+        const domainParts = domain.split('.')
+        const validDomain =
+        domainParts.length >= 2 &&
+        domainParts.every((part) => /^[a-zA-Z0-9-]{1,63}$/.test(part) && !part.startsWith('-') && !part.endsWith('-')) &&
+        /^[a-zA-Z]{2,24}$/.test(domainParts[domainParts.length - 1])
+
+        if (!validDomain) return 'Ingresa un correo válido'
+
         return null
     },
 
     password: (value) => {
         if (!value) return 'La contraseña es obligatoria'
+        if (value.trim().length === 0) return 'La contraseña no puede contener solo espacios'
         if (value.length < 6) return 'La contraseña debe tener al menos 6 caracteres'
+        if (value.length > 72) return 'La contraseña es demasiado larga'
+        if (/\s/.test(value)) return 'La contraseña no puede contener espacios'
         return null
     },
 
     required: (value, label = 'Este campo') => {
-        if (value === null || value === undefined || (typeof value === 'string' && !value.trim())) {
-        return `${label} es obligatorio`
-        }
+        if (value === null || value === undefined) return `${label} es obligatorio`
+        if (typeof value === 'string' && !value.trim()) return `${label} es obligatorio`
+        if (Array.isArray(value) && value.length === 0) return `${label} es obligatorio`
         return null
     },
 
     quantity: (value, { min = 1, max = Infinity, label = 'La cantidad', integer = true } = {}) => {
-        const num = Number(value)
         if (value === '' || value === null || value === undefined)
         return `${label} es obligatoria`
+        if (typeof value === 'string' && !/^-?\d+(\.\d+)?$/.test(value.trim()))
+        return `${label} debe ser un número`
+        const num = Number(value)
         if (isNaN(num))
         return `${label} debe ser un número`
         if (integer && !Number.isInteger(num))
         return `${label} debe ser un número entero`
+        if (!Number.isFinite(num) || Math.abs(num) > Number.MAX_SAFE_INTEGER)
+        return `${label} está fuera de rango`
         if (num < min) return `${label} debe ser al menos ${min}`
         if (num > max) return `${label} no puede superar ${max}`
         return null
     },
 
-    minLength: (value, { min, label = 'Este campo' } = {}) => {
-        if (!value || value.length < min) return `${label} debe tener al menos ${min} caracteres`
+    minLength: (value, { min, label = 'Este campo', trim = true } = {}) => {
+        const v = trim && typeof value === 'string' ? value.trim() : value
+        if (!v || v.length < min) return `${label} debe tener al menos ${min} caracteres`
         return null
     },
 
-    maxLength: (value, { max, label = 'Este campo' } = {}) => {
-        if (value && value.length > max) return `${label} no puede tener más de ${max} caracteres`
+    maxLength: (value, { max, label = 'Este campo', trim = true } = {}) => {
+        const v = trim && typeof value === 'string' ? value.trim() : value
+        if (v && v.length > max) return `${label} no puede tener más de ${max} caracteres`
         return null
     },
 
     phone: (value) => {
         if (!value?.trim()) return 'El teléfono es obligatorio'
-        if (!/^\+?[\d\s-]{8,}$/.test(value.replace(/\s/g, ''))) return 'Ingresa un teléfono válido'
+        const cleaned = value.replace(/[\s()-]/g, '')
+        if (!/^\+?\d+$/.test(cleaned)) return 'El teléfono solo puede contener números, espacios y guiones'
+        const digits = cleaned.replace(/^\+/, '')
+        if (digits.length < 8 || digits.length > 15) return 'El teléfono debe tener entre 8 y 15 dígitos'
         return null
     },
 
@@ -63,16 +95,20 @@ export const validators = {
 
     uid: (value) => {
         if (!value?.trim()) return 'El UID es obligatorio'
-        if (value.length < 10) return 'UID inválido'
+        const v = value.trim()
+        if (/\s/.test(v)) return 'El UID no puede contener espacios'
+        if (v.length < 10 || v.length > 128) return 'UID inválido'
+        if (!/^[a-zA-Z0-9_-]+$/.test(v)) return 'El UID contiene caracteres no permitidos'
         return null
     },
 
-    coordinate: (value, label = 'La coordenada') => {
+    coordinate: (value, { label = 'La coordenada', type } = {}) => {
         const num = Number(value)
         if (value === '' || value === null || value === undefined)
         return `${label} es obligatoria`
         if (isNaN(num)) return `${label} debe ser un número`
-        if (num < -180 || num > 180) return `${label} está fuera de rango`
+        const range = type === 'lat' ? 90 : 180
+        if (num < -range || num > range) return `${label} está fuera de rango`
         return null
     },
     }

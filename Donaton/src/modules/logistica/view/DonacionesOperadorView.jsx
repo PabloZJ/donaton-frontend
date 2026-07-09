@@ -1,4 +1,3 @@
-// DonacionesOperadorView.jsx
 import { useDonacionesOperadorViewModel } from '../viewmodel/DonacionesOperadorViewModel'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import { Warehouse, Package, CheckCircle2, Clock, Timer, XCircle, Inbox, Calendar, MessageSquare } from 'lucide-react'
